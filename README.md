@@ -11,7 +11,7 @@ This package contains the ROS2 action server that allows a Fastbot to follow way
 1. Launch the Gazebo simulation:
    ```bash
    source ~/ros2_ws/install/setup.bash
-ros2 launch fastbot_gazebo one_fastbot_room.launch.py
+   ros2 launch fastbot_gazebo one_fastbot_room.launch.py
 
 2. Launch the Action Server in another terminal under /ros2_ws folder:
    ```bash

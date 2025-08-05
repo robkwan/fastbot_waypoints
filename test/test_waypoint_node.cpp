@@ -13,7 +13,7 @@
 #include "fastbot_waypoints/action/waypoint.hpp"
 #include "rcl/node.h"
 
-#define ENABLE_GOOD_TESTS 0
+#define ENABLE_GOOD_TESTS 1
 
 using namespace std::chrono_literals;
 using Waypoint = fastbot_waypoints::action::Waypoint;

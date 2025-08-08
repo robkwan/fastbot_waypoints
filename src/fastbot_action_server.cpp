@@ -46,6 +46,8 @@ public:
         std::bind(&FastbotActionServer::handle_accepted, this,
                   std::placeholders::_1));
 
+    odom_first = false;
+
     RCLCPP_INFO(this->get_logger(), "Fastbot Waypoint Action Server Started.");
   }
 
@@ -58,7 +60,7 @@ private:
   geometry_msgs::msg::Point initial_position_;
   geometry_msgs::msg::Point current_position_;
   double current_yaw_ = 0.0;
-
+  bool odom_first;
   Waypoint::Feedback feedback_;
   std::string state_ = "idle";
 
@@ -80,6 +82,16 @@ private:
   rclcpp_action::GoalResponse
   handle_goal(const rclcpp_action::GoalUUID &,
               std::shared_ptr<const Waypoint::Goal> goal) {
+
+    int cnt = 0;
+    while (!odom_first) {
+      cnt++;
+      if (cnt > 5000) {
+        RCLCPP_INFO(this->get_logger(),
+                    "No odom data yet to start action server correctly.");
+      }
+    }
+
     RCLCPP_INFO(this->get_logger(), "Received goal: [%.2f, %.2f]",
                 goal->position.x, goal->position.y);
 
@@ -102,6 +114,7 @@ private:
   }
 
   void execute(const std::shared_ptr<GoalHandle> goal_handle) {
+
     const auto goal = goal_handle->get_goal();
     auto result = std::make_shared<Waypoint::Result>();
 
@@ -205,6 +218,8 @@ private:
   }
 
   void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
+    if (!odom_first)
+      odom_first = true;
     current_position_ = msg->pose.pose.position;
     auto q = msg->pose.pose.orientation;
     double roll, pitch, yaw;

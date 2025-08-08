@@ -10,13 +10,13 @@ This package contains the ROS2 action server that allows a Fastbot to follow way
 
 1. Launch the Gazebo simulation:
    ```bash
-   source ~/ros2_ws/install/setup.bash
+   cd ~/ros2_ws && colcon build
+   source install/setup.bash
    ros2 launch fastbot_gazebo one_fastbot_room.launch.py
 
-2. Launch the Action Server in another terminal under /ros2_ws folder:
+2. Launch the Action Server in another terminal:
    ```bash
-   colcon build --packages-select fastbot_waypoints 
-   source ~/ros2_ws/install/setup.bash
+   cd ~/ros2_ws && source install/setup.bash
    ros2 run fastbot_waypoints fastbot_action_server
 
 3. Run ros tests on default good cases in another terminal:

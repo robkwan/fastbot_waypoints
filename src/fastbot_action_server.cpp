@@ -144,7 +144,10 @@ private:
       double dy = target.y - current_position_.y;
       double pos_err = std::sqrt(dx * dx + dy * dy);
 
-      double desired_yaw_dynamic = std::atan2(dy, dx);
+      // double desired_yaw_dynamic = std::atan2(dy, dx);
+      double desired_yaw_dynamic =
+          normalize_angle(std::atan2(dy, dx) + M_PI / 2);
+
       geometry_msgs::msg::Twist cmd;
 
       if (pos_err > dist_precision_) {
@@ -215,11 +218,18 @@ private:
     result->success = true;
     goal_handle->succeed(result);
     RCLCPP_INFO(this->get_logger(), "Goal succeeded");
+    RCLCPP_INFO(this->get_logger(),
+                "Odom: x=%.2f, y=%.2f, yaw=%.2f rad (%.1f°)",
+                current_position_.x, current_position_.y, current_yaw_,
+                current_yaw_ * 180.0 / M_PI);
   }
 
   void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
-    if (!odom_first)
+    if (!odom_first) {
       odom_first = true;
+      RCLCPP_INFO(this->get_logger(), "Fastbot Odometry data ready.");
+    }
+
     current_position_ = msg->pose.pose.position;
     auto q = msg->pose.pose.orientation;
     double roll, pitch, yaw;

@@ -241,7 +241,7 @@ TEST(WaypointTest, SimulateExitFailure) {
 // Test 3: Failed X outside room range
 TEST_F(WaypointTest, TestTimeOutCase) {
   try {
-    double goal_x = -0.1, goal_y = -0.75;
+    double goal_x = -0.2, goal_y = -0.75;
     send_goal(goal_x, goal_y);
 
     geometry_msgs::msg::Point pos = get_position();
@@ -253,10 +253,10 @@ TEST_F(WaypointTest, TestTimeOutCase) {
     std::exit(EXIT_FAILURE); // Test will error, not fail
   }
 }
-
+/*
 TEST(WaypointTest, SkippedTest) {
   GTEST_SKIP() << "Skipping this test for demonstration";
-}
+}*/
 
 #endif
 

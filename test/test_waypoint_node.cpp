@@ -13,7 +13,7 @@
 
 #include "fastbot_waypoints/action/waypoint.hpp"
 
-#define ENABLE_GOOD_TESTS 1
+#define ENABLE_GOOD_TESTS 0
 
 using namespace std::chrono_literals;
 using Waypoint = fastbot_waypoints::action::Waypoint;
@@ -219,6 +219,43 @@ TEST_F(WaypointTest, TestFinalYawWithinTolerance) {
   double yaw_error = std::abs(normalize_angle(expected_yaw - actual_yaw));
   double yaw_tol = 0.5; // Allowable yaw error
   EXPECT_LE(yaw_error, yaw_tol) << "Yaw angle out of tolerance";
+}
+
+#else
+/*
+TEST_F(WaypointTest, SimulateDivideByZero) {
+  int x = 0;
+  int y = 5 / x; // Undefined behavior = potential crash
+  (void)y;
+}*/
+/*
+TEST(WaypointTest, SimulateThrowError) {
+  throw std::runtime_error("Uncaught exception error!");
+}
+*/
+/*
+TEST(WaypointTest, SimulateExitFailure) {
+  std::exit(EXIT_FAILURE); // Test will error, not fail
+}
+*/
+// Test 3: Failed X outside room range
+TEST_F(WaypointTest, TestTimeOutCase) {
+  try {
+    double goal_x = -0.1, goal_y = -0.75;
+    send_goal(goal_x, goal_y);
+
+    geometry_msgs::msg::Point pos = get_position();
+    double pos_tol = 0.1;
+    EXPECT_NEAR(pos.x, goal_x, pos_tol);
+  } catch (const std::exception &e) {
+    // FAIL() << "Exception caught: " << e.what();
+    // throw std::runtime_error("Simulated uncaught error");
+    std::exit(EXIT_FAILURE); // Test will error, not fail
+  }
+}
+
+TEST(WaypointTest, SkippedTest) {
+  GTEST_SKIP() << "Skipping this test for demonstration";
 }
 
 #endif
